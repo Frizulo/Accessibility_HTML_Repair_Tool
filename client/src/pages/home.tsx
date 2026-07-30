@@ -22,6 +22,34 @@ import * as Diff from "diff";
 import type { RepairResult, AccessibilityIssue } from "@shared/schema";
 
 // Sample HTML for demonstration
+async function copyTextToClipboard(text: string): Promise<void> {
+  // Clipboard API is only available in secure contexts (HTTPS or localhost).
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  // Fallback for HTTP deployments and older browsers.
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.left = "-9999px";
+  textarea.style.top = "0";
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+
+  try {
+    const copied = document.execCommand("copy");
+    if (!copied) {
+      throw new Error("document.execCommand('copy') returned false");
+    }
+  } finally {
+    document.body.removeChild(textarea);
+  }
+}
+
 const SAMPLE_HTML = `<div>
   <a href="/home"></a>
   <a href="/about">關於我們</a>
@@ -553,7 +581,7 @@ export default function Home() {
             onOriginalChange={setInputHtml}
             onCopyRepaired={async (code) => {
               try {
-                await navigator.clipboard.writeText(code);
+                await copyTextToClipboard(code);
                 toast({
                   title: "已複製",
                   description: "修正後程式碼已複製到剪貼簿",
