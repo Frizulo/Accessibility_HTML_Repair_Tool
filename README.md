@@ -27,17 +27,22 @@
 
 ## 系統架構說明
 
-* 前端：React + Vite（程式碼輸入、diff 顯示、修繕報告）
+* 前端：React + Vite
+  * HTML 程式碼輸入
+  * 修補前後差異顯示
+  * 無障礙檢測與修繕報告
+
 * 後端：Node.js + Express
+
 * 修繕引擎：
+  * HTML / CSS 規則式分析與修繕
+  * 依檢測規則執行可重現的自動修正
+  * 對涉及內容語意或互動行為的項目保留人工確認
 
-  * HTML / CSS 以 Parser（AST）方式處理
-  * 規則式（Rule-based）修繕，結果可重現
 * 架構特性：
-
-  * Stateless（不保存任何使用者資料）
-  * 不使用資料庫
-  * 單一 Docker container 即可執行
+  * Stateless，不保存使用者輸入資料
+  * 無需資料庫或雲端 API
+  * 支援 Docker 容器化部署
 
 
 ## 啟動方式
